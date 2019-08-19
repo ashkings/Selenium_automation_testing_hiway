@@ -50,4 +50,4 @@ def test_next_button_disabled_if_on_todays_date(setup):
     timesheet_date = browser.find_element_by_class_name("mobile-timesheet-date").text
     if todays_date in timesheet_date:
         assert browser.find_element_by_xpath(
-            "//html/body/md-content/div/div/div[2]/button[2]").get_property('disabled') is True
+            "//div/div[2]/button[2]").get_property('disabled') is True
