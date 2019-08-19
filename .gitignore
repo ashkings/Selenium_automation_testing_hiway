@@ -1,0 +1,8 @@
+venv/
+web_drivers/
+Steps_for_testcases
+*.log
+*.log/
+.idea/
+__pycache__/
+*.cache/
