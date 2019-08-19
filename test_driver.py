@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 import time
-from datetime import date
+from datetime import date,timedelta
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 
@@ -49,5 +49,12 @@ def test_next_button_disabled_if_on_todays_date(setup):
     todays_date = date.today().strftime("%a, %b %d")
     timesheet_date = browser.find_element_by_class_name("mobile-timesheet-date").text
     if todays_date in timesheet_date:
-        assert browser.find_element_by_xpath(
-            "//div/div[2]/button[2]").get_property('disabled') is True
+        assert browser.find_element_by_css_selector("button[ng-click='next()']").get_property('disabled') is True
+
+
+def test_prev_button_takes_a_day_back_on_click(setup):
+    browser.find_element_by_css_selector("button[ng-click='prev()']").click()
+    prev_date = date.today() - timedelta(days=1)
+    prev_date = prev_date.strftime("%a, %b %d")
+    timesheet_date = browser.find_element_by_class_name("mobile-timesheet-date").text
+    assert prev_date in timesheet_date
