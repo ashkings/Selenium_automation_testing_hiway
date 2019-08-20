@@ -4,4 +4,4 @@ class LoginUsingGoogle:
         self.link_text = 'LOGIN USING GOOGLE'
 
     def click_on_login(self):
-        self.driver.find_element_by_link_text("LOGIN USING GOOGLE").click()
+        self.driver.find_element_by_link_text(self.link_text).click()
