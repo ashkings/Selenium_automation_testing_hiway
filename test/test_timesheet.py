@@ -6,7 +6,7 @@ from pages.driver import Driver
 from pages.enter_login_credentials import LoginCredentials
 from pages.start_using_application import StartApplication
 from pages.timesheet import Timesheet
-from datetime import date
+from datetime import date, timedelta
 
 
 class TestLogin(unittest.TestCase):
@@ -50,6 +50,14 @@ class TestLogin(unittest.TestCase):
         timesheet_date = timesheet.get_date_on_timesheet()
         if todays_date == timesheet_date:
             assert timesheet.next_button_state() is True
+
+    @pytest.mark.usefixtures("setup")
+    def test_prev_button_takes_a_day_back_on_click(self):
+        for day in range(1, 3):
+            prev_date = date.today() - timedelta(days=day)
+            timesheet.click_prev_button()
+
+            assert prev_date.strftime("%a, %b %d") in timesheet.get_date_on_timesheet()
 
 
 if __name__ == '__main__':
