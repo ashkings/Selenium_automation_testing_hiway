@@ -44,6 +44,13 @@ class TestLogin(unittest.TestCase):
 
         assert todays_date in timesheet_date
 
+    @pytest.mark.usefixtures("setup")
+    def test_next_button_disabled(self):
+        todays_date = date.today().strftime("%a, %b %d")
+        timesheet_date = timesheet.get_date_on_timesheet()
+        if todays_date == timesheet_date:
+            assert timesheet.next_button_state() is True
+
 
 if __name__ == '__main__':
     pytest.main()

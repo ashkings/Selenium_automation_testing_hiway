@@ -11,6 +11,7 @@ class Timesheet:
     logged_username = 'username-position'
     timesheet_name = 'h2'
     date_class = 'mobile-timesheet-date'
+    locator_next_button = "button[ng-click='next()']"
 
     def __init__(self, driver):
         self.driver = driver
@@ -27,3 +28,7 @@ class Timesheet:
 
     def get_date_on_timesheet(self):
         return self.driver.find_element_by_class_name(self.date_class).text
+
+    def next_button_state(self):
+        return self.driver.find_element_by_css_selector(self.locator_next_button).get_property('disabled')
+
