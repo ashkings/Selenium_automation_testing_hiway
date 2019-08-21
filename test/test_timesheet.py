@@ -6,6 +6,7 @@ from pages.driver import Driver
 from pages.enter_login_credentials import LoginCredentials
 from pages.start_using_application import StartApplication
 from pages.timesheet import Timesheet
+from datetime import date
 
 
 class TestLogin(unittest.TestCase):
@@ -33,7 +34,15 @@ class TestLogin(unittest.TestCase):
     def test_timesheet_name_same_as_username(self):
         login_name = timesheet.get_logged_in_username()
         displayed_username = timesheet.get_name_on_timesheet()
+
         assert login_name.lower() in displayed_username
+
+    @pytest.mark.usefixtures("setup")
+    def test_timesheet_loaded_in_todays_date(self):
+        todays_date = date.today().strftime("%a, %b %d")
+        timesheet_date = timesheet.get_date_on_timesheet()
+
+        assert todays_date in timesheet_date
 
 
 if __name__ == '__main__':

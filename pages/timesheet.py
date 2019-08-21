@@ -10,6 +10,7 @@ class Timesheet:
     last_element_check_xpath = "//button[@ng-click='provideLeave()']"
     logged_username = 'username-position'
     timesheet_name = 'h2'
+    date_class = 'mobile-timesheet-date'
 
     def __init__(self, driver):
         self.driver = driver
@@ -23,3 +24,6 @@ class Timesheet:
 
     def get_name_on_timesheet(self):
         return self.driver.find_element_by_tag_name(self.timesheet_name).text
+
+    def get_date_on_timesheet(self):
+        return self.driver.find_element_by_class_name(self.date_class).text
