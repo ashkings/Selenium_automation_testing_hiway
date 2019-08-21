@@ -23,14 +23,17 @@ class TestLogin(unittest.TestCase):
         login_values.enter_password()
         dashboard = StartApplication(browser)
         dashboard.click_on_start_using_button()
+        global timesheet
         timesheet = Timesheet(browser)
         timesheet.click_on_timesheet()
-        # yield
-        # browser.close()
+        yield
+        browser.close()
 
     @pytest.mark.usefixtures("setup")
     def test_timesheet_name_same_as_username(self):
-        pass
+        login_name = timesheet.get_logged_in_username()
+        displayed_username = timesheet.get_name_on_timesheet()
+        assert login_name.lower() in displayed_username
 
 
 if __name__ == '__main__':
