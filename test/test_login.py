@@ -1,16 +1,13 @@
-import pytest, unittest, constant
-
+import pytest
+import unittest
+import constant
 from Utility.csv_loader import get_csv_data
 from pages.open_hiway_url import OpenHighway
 from pages.login_google import LoginUsingGoogle
 from pages.driver import Driver
 from pages.enter_login_credentials import LoginCredentials
+from pages.start_using_application import StartApplication
 from ddt import ddt, data, unpack
-
-
-@pytest.fixture
-def browser_name(request):
-    return request.config.getoption("--browser")
 
 
 @ddt
@@ -34,6 +31,9 @@ class TestLogin(unittest.TestCase):
         login_values = LoginCredentials(browser)
         login_values.enter_username(username)
         login_values.enter_password(password)
+        page_access = StartApplication(browser)
+
+        assert username in page_access.validating_access_of_user()
 
 
 if __name__ == '__main__':
