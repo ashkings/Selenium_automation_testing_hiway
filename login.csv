@@ -1,3 +1,4 @@
-Username,Password
-ashusingla884@gmail.com,Ashkings123@
-ashu.singla@hashedin.com,Hashedin.com
+{
+    "username":["ashusingla884@gmail.com","ashu.singla@hashedin.com"],
+    "password":["Ashkings123@","Hashedin.com"]
+}
