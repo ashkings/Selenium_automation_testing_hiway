@@ -1,3 +1,4 @@
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -19,6 +20,10 @@ class Timesheet:
     locator_mins = 'newEntry.min'
     locator_desc = 'newEntry.description'
     locator_add = '//form/div[1]/button'
+    locator_alert_div = 'div.md-toast-content'
+    delete_button = '//md-icon-button/md-icon/i'
+    s_no = '//form/div[1]/div[1]/div[1]/div[1]'
+    color_bar = '.md-bar.md-bar2'
 
     def __init__(self, driver):
         self.driver = driver
@@ -43,7 +48,9 @@ class Timesheet:
         self.driver.find_element_by_css_selector(self.locator_prev_button).click()
 
     def create_project_code(self, project_code):
-        self.driver.find_element_by_css_selector(self.project_code_dropdown).send_keys(project_code)
+        code = self.driver.find_element_by_css_selector(self.project_code_dropdown)
+        code.clear()
+        code.send_keys(project_code)
 
     def create_type(self, type):
         WebDriverWait(self.driver, 5).until(
@@ -81,5 +88,24 @@ class Timesheet:
     def get_working_hrs_from_label(self):
         return self.driver.find_element_by_class_name(self.label_class).text.split(' ')[0]
 
+    def delete_entry(self):
+        while True:
+            try:
+                self.driver.find_element_by_xpath(self.delete_button).click()
+                self.wait_till_alert_goes()
 
+            except NoSuchElementException:
+                return
 
+    def wait_till_alert_goes(self):
+        WebDriverWait(self.driver, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.locator_alert_div)))
+        WebDriverWait(self.driver, 5).until_not(
+            EC.presence_of_element_located((By.CSS_SELECTOR, self.locator_alert_div)))
+
+    def get_sno_from_timesheet_table(self):
+        return str(self.driver.find_element_by_xpath(self.s_no).text)
+
+    def get_color_rgba_value(self):
+        return str(self.driver.find_element_by_css_selector(self.color_bar).value_of_css_property(
+            'background-color'))
