@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
+import constant, time
 
 
 class Timesheet:
@@ -10,9 +10,15 @@ class Timesheet:
     last_element_check_xpath = "//button[@ng-click='provideLeave()']"
     logged_username = 'username-position'
     timesheet_name = 'h2'
-    date_class = 'mobile-timesheet-date'
+    label_class = 'mobile-timesheet-date'
     locator_next_button = "button[ng-click='next()']"
     locator_prev_button = "button[ng-click='prev()']"
+    project_code_dropdown = "input[type='search']"
+    type_dropdown = "//md-select[@ng-model='newEntry.type']"
+    locator_hrs = 'newEntry.hrs'
+    locator_mins = 'newEntry.min'
+    locator_desc = 'newEntry.description'
+    locator_add = '//form/div[1]/button'
 
     def __init__(self, driver):
         self.driver = driver
@@ -28,12 +34,52 @@ class Timesheet:
         return self.driver.find_element_by_tag_name(self.timesheet_name).text
 
     def get_date_on_timesheet(self):
-        return self.driver.find_element_by_class_name(self.date_class).text
+        return self.driver.find_element_by_class_name(self.label_class).text
 
     def next_button_state(self):
         return self.driver.find_element_by_css_selector(self.locator_next_button).get_property('disabled')
 
     def click_prev_button(self):
         self.driver.find_element_by_css_selector(self.locator_prev_button).click()
+
+    def create_project_code(self, project_code):
+        self.driver.find_element_by_css_selector(self.project_code_dropdown).send_keys(project_code)
+
+    def create_type(self, type):
+        WebDriverWait(self.driver, 5).until(
+            EC.presence_of_element_located((By.XPATH, self.type_dropdown)))
+        self.driver.find_element_by_xpath(self.type_dropdown).send_keys(type)
+
+    def create_hrs(self, hrs):
+        WebDriverWait(self.driver, 5).until(
+            EC.visibility_of_element_located((By.NAME, self.locator_hrs)))
+        self.driver.find_element_by_name(self.locator_hrs).send_keys(hrs)
+
+    def create_mins(self, mins):
+        WebDriverWait(self.driver, 5).until(
+            EC.visibility_of_element_located((By.NAME, self.locator_mins)))
+        self.driver.find_element_by_name(self.locator_mins).send_keys(mins)
+
+    def create_description(self, desc):
+        self.driver.find_element_by_name(self.locator_desc).send_keys(desc)
+
+    def create_entry(self, project_code=constant.default_projectcode, type=constant.default_type,
+                     hrs=constant.default_hrs, mins=constant.default_mins, desc=constant.default_desc):
+        self.create_project_code(project_code)
+        self.create_type(type)
+        self.create_hrs(hrs)
+        self.create_mins(mins)
+        self.create_description(desc)
+
+        WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable((By.XPATH, self.locator_add)))
+        self.driver.find_element_by_xpath(self.locator_add).click()
+
+        # Sleep used as page gonna refresh after every entry added so wait for it
+        time.sleep(3)
+
+    def get_working_hrs_from_label(self):
+        return self.driver.find_element_by_class_name(self.label_class).text.split(' ')[0]
+
 
 
